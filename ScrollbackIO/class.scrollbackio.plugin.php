@@ -6,9 +6,10 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'class.scrollbackiojavascript.php';
 $PluginInfo['ScrollbackIO'] = array(
 	'Name' => 'Scrollback.io',
 	'Description' => 'Adds Scrollback.io JavaScript to forum',
-	'Version' => '0.1',
+	'Version' => '0.2',
 	'MobileFriendly' => TRUE,
 	'Author' => 'James Ward',
+	'AuthorUrl' => 'https://github.com/imnotjames/vanillaforums-plugin-scrollbackio',
 	'SettingsUrl' => '/dashboard/plugin/scrollbackio'
 );
 
