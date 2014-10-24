@@ -21,6 +21,7 @@ class ScrollbackIOJavascript {
 	private $StartOpen = false;
 
 	private $Username;
+	private $GuestUsername;
 
 	public function setHost($Host) {
 		if (empty($Host)) {
@@ -50,6 +51,10 @@ class ScrollbackIOJavascript {
 		$this->Username = $Username;
 	}
 
+	public function setGuestUsername($GuestUsername) {
+		$this->GuestUsername = $GuestUsername;
+	}
+
 	public function __toString() {
 		$Configuration = array(
 			'room'     => $this->Room,
@@ -60,6 +65,8 @@ class ScrollbackIOJavascript {
 
 		if (!empty($this->Username)) {
 			$Configuration['nick'] = $this->Username;
+		} else if (!empty($this->GuestUsername)) {
+			$Configuration['nick'] = $this->GuestUsername;
 		}
 
 		$ClientJSFile = '//' . $this->Host . '/client.min.js';
@@ -84,6 +91,7 @@ class ScrollbackIOPlugin extends Gdn_Plugin {
 			'StartOpen',
 			'Room',
 			'Host',
+			'GuestUsername',
 		);
 
 		$ScrollbackIOJavascript = new ScrollbackIOJavascript();
@@ -120,7 +128,8 @@ class ScrollbackIOPlugin extends Gdn_Plugin {
 				'Plugins.ScrollbackIO.Room',
 				'Plugins.ScrollbackIO.UseLightTheme',
 				'Plugins.ScrollbackIO.StartOpen',
-				'Plugins.ScrollbackIO.Host'
+				'Plugins.ScrollbackIO.Host',
+				'Plugins.ScrollbackIO.GuestUsername',
 			)
 		);
 

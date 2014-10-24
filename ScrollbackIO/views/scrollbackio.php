@@ -24,6 +24,14 @@
 		</tr>
 		<tr>
 			<th>
+				<?= Gdn::Translate('Guest Username'); ?>
+			</th>
+			<td>
+				<?= $this->Form->TextBox('Plugins.ScrollbackIO.GuestUsername', array('size'=>"80", 'placeholder' => 'Random Username')); ?>
+			</td>
+		</tr>
+		<tr>
+			<th>
 				<?= Gdn::Translate('Use Light Theme'); ?>
 			</th>
 			<td>
