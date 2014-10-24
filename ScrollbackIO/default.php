@@ -10,6 +10,67 @@ $PluginInfo['ScrollbackIO'] = array(
 	'SettingsUrl' => '/dashboard/plugin/scrollbackio'
 );
 
+class ScrollbackIOJavascript {
+	const DEFAULT_HOST = 'scrollback.io';
+	const DEFAULT_ROOM = 'vanillaforums';
+
+	private $Host = self::DEFAULT_HOST;
+	private $Room = self::DEFAULT_ROOM;
+
+	private $UseLightTheme = false;
+	private $StartOpen = false;
+
+	private $Username;
+
+	public function setHost($Host) {
+		if (empty($Host)) {
+			$Host = self::DEFAULT_HOST;
+		}
+
+		$this->Host = $Host;
+	}
+
+	public function setRoom($Room) {
+		if (empty($Room)) {
+			$Room = self::DEFAULT_ROOM;
+		}
+
+		$this->Room = $Room;
+	}
+
+	public function setUseLightTheme($UseLightTheme) {
+		$this->UseLightTheme = $UseLightTheme == true;
+	}
+
+	public function setStartOpen($StartOpen) {
+		$this->StartOpen = $StartOpen == true;
+	}
+
+	public function setUsername($Username) {
+		$this->Username = $Username;
+	}
+
+	public function __toString() {
+		$Configuration = array(
+			'room'     => $this->Room,
+			'form'     => 'toast',
+			'theme'    => $this->UseLightTheme ? 'light' : 'dark',
+			'minimize' => ! $this->StartOpen
+		);
+
+		if (!empty($this->Username)) {
+			$Configuration['nick'] = $this->Username;
+		}
+
+		$ClientJSFile = '//' . $this->Host . '/client.min.js';
+
+		$JavascriptBody .= 'window.scrollback = ' . json_encode($Configuration) . ';';
+		$JavascriptBody .= '(function(d,s,h,e){e=d.createElement(s);e.async=1;e.src="' . $ClientJSFile . '";d.getElementsByTagName(s)[0].parentNode.appendChild(e);}(document,"script"));';
+
+		return '<script type="text/javascript">' . $JavascriptBody . '</script>';
+	}
+}
+
 class ScrollbackIOPlugin extends Gdn_Plugin {
 	public function Base_Render_Before($Sender) {
 		if ($Sender->Application !== 'Vanilla') {
@@ -18,42 +79,30 @@ class ScrollbackIOPlugin extends Gdn_Plugin {
 
 		$Session = GDN::Session();
 
+		$ConfigurationDirectives = array(
+			'UseLightTheme',
+			'StartOpen',
+			'Room',
+			'Host',
+		);
+
+		$ScrollbackIOJavascript = new ScrollbackIOJavascript();
+
+		foreach ($ConfigurationDirectives as $Directive) {
+			$ConfigurationValue = C('Plugins.ScrollbackIO.' . $Directive, 'default');
+
+			if ($ConfigurationValue !== 'default') {
+				$ScrollbackIOJavascript->{'set' . $Directive}($ConfigurationValue);
+			}
+		}
+
 		if (!empty($Session->User->Name)) {
-			$Username = $Session->User->Name;
-		} else {
-			$Username = null;
+			$ScrollbackIOJavascript->setUsername($Session->User->Name);
 		}
 
-		$Sender->Head->AddString($this->getScrollbackJavascript($Username));
-	}
-
-	private function getScrollbackJavascript($Username = null) {
-		$UseLightTheme = C('Plugins.ScrollbackIO.UseLightTheme') == true;
-		$StartOpen = C('Plugins.ScrollbackIO.StartOpen') == true;
-		$Room = C('Plugins.ScrollbackIO.Room', 'vanillaforums');
-		$Host = C('Plugins.ScrollbackIO.Host');
-
-		if (empty($Host)) {
-			$Host = 'scrollback.io';
-		}
-
-		$Configuration = [
-			'room'     => $Room,
-			'form'     => 'toast',
-			'theme'    => $UseLightTheme ? 'light' : 'dark',
-			'minimize' => $StartOpen
-		];
-
-		if (!empty($Username)) {
-			$Configuration['nick'] = $Username;
-		}
-
-		$ClientJSFile = '//' . $Host . '/client.min.js';
-
-		$JavascriptBody .= 'window.scrollback = ' . json_encode($Configuration) . ';';
-		$JavascriptBody .= '(function(d,s,h,e){e=d.createElement(s);e.async=1;e.src="' . $ClientJSFile . '";d.getElementsByTagName(s)[0].parentNode.appendChild(e);}(document,"script"));';
-
-		return '<script type="text/javascript">' . $JavascriptBody . '</script>';
+		$Sender->Head->AddString(
+			$ScrollbackIOJavascript->__toString()
+		);
 	}
 
 	public function PluginController_ScrollbackIO_Create($Sender) {
