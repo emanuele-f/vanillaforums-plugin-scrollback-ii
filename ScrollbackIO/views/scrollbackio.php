@@ -48,6 +48,14 @@
 		</tr>
 		<tr>
 			<th>
+				<?= Gdn::Translate('Hide From Guests'); ?>
+			</th>
+			<td>
+				<?= $this->Form->Checkbox('Plugins.ScrollbackIO.HideFromGuests'); ?>
+			</td>
+		</tr>
+		<tr>
+			<th>
 				<?= Gdn::Translate('Scrollback Host and Port'); ?>
 			</th>
 			<td>

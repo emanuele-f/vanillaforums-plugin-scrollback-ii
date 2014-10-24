@@ -104,8 +104,12 @@ class ScrollbackIOPlugin extends Gdn_Plugin {
 			}
 		}
 
+		$HideFromGuests = C('Plugins.ScrollbackIO.HideFromGuests');
+
 		if (!empty($Session->User->Name)) {
 			$ScrollbackIOJavascript->setUsername($Session->User->Name);
+		} else if ($HideFromGuests) {
+			return;
 		}
 
 		$Sender->Head->AddString(
@@ -130,6 +134,7 @@ class ScrollbackIOPlugin extends Gdn_Plugin {
 				'Plugins.ScrollbackIO.StartOpen',
 				'Plugins.ScrollbackIO.Host',
 				'Plugins.ScrollbackIO.GuestUsername',
+				'Plugins.ScrollbackIO.HideFromGuests',
 			)
 		);
 
