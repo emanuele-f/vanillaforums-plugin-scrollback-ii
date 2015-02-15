@@ -47,12 +47,18 @@ class ScrollbackIOJavascript {
 	}
 
 	public function __toString() {
+        if (!empty($Session->User->UserID))
+            $UserID = $Session->User->UserID;
+        else
+            $UserID = null;
+
 		$Configuration = array(
 			'room'     => $this->Room,
 			'form'     => 'toast',
 			'theme'    => $this->UseLightTheme ? 'light' : 'dark',
 			'minimize' => ! $this->StartOpen,
-            'tkey'     => Gdn::Session()->TransientKey()
+            'tkey'     => Gdn::Session()->TransientKey(),
+            'uid'      => $UserID
 		);
 
 		if (!empty($this->Username)) {
