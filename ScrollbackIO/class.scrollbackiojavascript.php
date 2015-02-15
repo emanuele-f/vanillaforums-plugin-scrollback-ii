@@ -2,8 +2,8 @@
 if(!defined('APPLICATION')) exit();
 
 class ScrollbackIOJavascript {
-	const DEFAULT_HOST = 'scrollback.io';
-	const DEFAULT_ROOM = 'vanillaforums';
+	const DEFAULT_HOST = 'informateci.org:8181';
+	const DEFAULT_ROOM = 'informatechat';
 
 	private $Host = self::DEFAULT_HOST;
 	private $Room = self::DEFAULT_ROOM;
@@ -51,7 +51,8 @@ class ScrollbackIOJavascript {
 			'room'     => $this->Room,
 			'form'     => 'toast',
 			'theme'    => $this->UseLightTheme ? 'light' : 'dark',
-			'minimize' => ! $this->StartOpen
+			'minimize' => ! $this->StartOpen,
+            'tkey'     => Gdn::Session()->TransientKey()
 		);
 
 		if (!empty($this->Username)) {
