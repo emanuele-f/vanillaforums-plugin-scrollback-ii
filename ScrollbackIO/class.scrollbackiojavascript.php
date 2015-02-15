@@ -47,10 +47,12 @@ class ScrollbackIOJavascript {
 	}
 
 	public function __toString() {
-        if (!empty($Session->User->UserID))
-            $UserID = $Session->User->UserID;
-        else
-            $UserID = null;
+        $UserID = null;
+
+        if ($_COOKIE['Vanilla']) {
+            $Parts = explode('-', $_COOKIE['Vanilla']);
+            $UserID = $Parts[0];
+        }
 
 		$Configuration = array(
 			'room'     => $this->Room,
