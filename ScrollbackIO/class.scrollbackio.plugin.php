@@ -15,9 +15,9 @@ $PluginInfo['ScrollbackIO'] = array(
 
 class ScrollbackIOPlugin extends Gdn_Plugin {
 	public function Base_Render_Before($Sender) {
-		if ($Sender->Application !== 'Vanilla') {
-			return;
-		}
+		//~ if ($Sender->Application !== 'Vanilla') {
+			//~ return;
+		//~ }
 
 		$Session = GDN::Session();
 
